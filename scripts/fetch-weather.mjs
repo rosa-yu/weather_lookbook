@@ -88,9 +88,19 @@ async function fetchCurrentWeather(serviceKey) {
   }).toString();
 
   const response = await fetch(url);
-  if (!response.ok) throw new Error(`KMA request failed with HTTP ${response.status}.`);
+  const responseText = await response.text();
+  if (!response.ok) {
+    const safeDetail = responseText
+      .replace(/<[^>]+>/g, " ")
+      .replace(/\s+/g, " ")
+      .trim()
+      .slice(0, 240);
+    throw new Error(
+      `KMA request failed with HTTP ${response.status}${safeDetail ? `: ${safeDetail}` : "."}`,
+    );
+  }
 
-  const data = await response.json();
+  const data = JSON.parse(responseText);
   const resultCode = data?.response?.header?.resultCode;
   const resultMessage = data?.response?.header?.resultMsg;
   if (resultCode && resultCode !== "00") {
