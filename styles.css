@@ -23,22 +23,21 @@
 
 :root {
   color: #0a0a0a;
-  background: #e8e8e5;
+  background: #f7f7f5;
   font-family: "Archivo", Arial, sans-serif;
   font-synthesis: none;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { min-width: 320px; min-height: 100vh; min-height: 100svh; background: #e8e8e5; }
+html, body { width: 640px; height: 960px; overflow: hidden; background: #f7f7f5; }
 button, video { font: inherit; }
-.viewport { min-height: 100vh; min-height: 100svh; display: grid; place-items: center; }
+.viewport { width: 640px; height: 960px; overflow: hidden; }
 
 .display-card {
   container-type: inline-size;
   position: relative;
-  width: min(100vw, 66.6667vh);
-  width: min(100vw, 66.6667svh);
-  aspect-ratio: 2 / 3;
+  width: 640px;
+  height: 960px;
   padding: 6.25cqw 6.875cqw 4.6875cqw;
   display: flex;
   flex-direction: column;
