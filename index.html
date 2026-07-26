@@ -1,80 +1,76 @@
 <!doctype html>
-<html lang="ko">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="성수동 실시간 날씨 기반 24/7 series 룩북" />
-    <title>24/7 series Weather Lookbook</title>
+    <meta
+      name="description"
+      content="247 Daily Station weather-responsive lookbook for Seongsu, Seoul"
+    />
+    <title>247 Daily Station - Weather Lookbook</title>
+    <link rel="preload" href="./assets/display/archivo-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="./assets/display/lookbook.mp4" as="video" type="video/mp4" />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <main class="screen-shell" aria-label="24/7 series weather lookbook">
-      <section class="display-card">
+    <main class="viewport">
+      <section class="display-card" aria-label="247 Daily Station weather lookbook">
         <header class="brand-header">
-          <p class="eyebrow">WEATHER LOOKBOOK</p>
-          <h1>24/7 series</h1>
-          <p class="location">Seongsu-dong, Seoul</p>
+          <div class="brand-lockup">
+            <img src="./assets/display/247-logo.png" alt="247" />
+            <p>DAILY STATION</p>
+          </div>
+          <p class="location">SEOUL &middot; KR</p>
         </header>
 
-        <section class="weather-panel" aria-labelledby="weather-title">
-          <div>
-            <p class="section-label" id="weather-title">WEATHER</p>
-            <div class="weather-main">
-              <span class="weather-icon" id="weatherIcon" aria-hidden="true">☁</span>
-              <div>
-                <p class="today-label">오늘</p>
-                <p class="temperature"><span id="temperature">--</span>°C</p>
-              </div>
+        <div class="rule"></div>
+
+        <section class="weather-section" aria-labelledby="weather-heading">
+          <p class="section-label" id="weather-heading">TODAY'S WEATHER CONDITION</p>
+          <div class="date-time">
+            <time id="dateText">----</time>
+            <time id="timeText">--:--:--</time>
+          </div>
+          <div class="weather-main">
+            <div class="weather-icon" id="weatherIcon" aria-hidden="true"></div>
+            <div class="weather-reading">
+              <p class="temperature"><span id="temperature">--</span><span>&deg;C</span></p>
+              <p class="condition" id="conditionLabel">Loading</p>
             </div>
           </div>
-          <dl class="weather-meta">
-            <div>
-              <dt>습도</dt>
-              <dd><span id="humidity">--</span>%</dd>
-            </div>
-            <div>
-              <dt>강수</dt>
-              <dd id="precipitation">확인 중</dd>
-            </div>
-            <div>
-              <dt>업데이트</dt>
-              <dd id="updatedAt">--:--</dd>
-            </div>
-          </dl>
         </section>
 
-        <section class="lookbook-panel" aria-labelledby="lookbook-title">
-          <div class="lookbook-copy">
-            <p class="section-label" id="lookbook-title">TODAY'S LOOK</p>
-            <h2 id="lookTitle">날씨에 맞는 룩을 고르는 중</h2>
-            <p id="lookDescription">성수동의 기온, 습도, 눈/비 여부를 기준으로 룩북을 추천합니다.</p>
+        <div class="rule weather-rule"></div>
+
+        <section class="lookbook-section" aria-labelledby="lookbook-heading">
+          <div class="lookbook-heading">
+            <p class="section-label" id="lookbook-heading">RECOMMENDED LOOK</p>
+            <p id="lookTitle">KOMATSU Pants + Light Shirt</p>
           </div>
-          <figure class="lookbook-frame">
-            <img id="lookbookImage" src="./assets/lookbook/default.svg" alt="24/7 series 기본 룩북 이미지" />
-          </figure>
+          <div class="lookbook-media">
+            <div class="video-clip">
+              <video
+                id="lookbookVideo"
+                src="./assets/display/lookbook.mp4"
+                autoplay
+                muted
+                loop
+                playsinline
+                preload="auto"
+                aria-label="247 weather-responsive lookbook"
+              ></video>
+            </div>
+          </div>
         </section>
 
-        <nav class="service-strip" aria-label="24/7 series services">
-          <div>
-            <span aria-hidden="true">☂</span>
-            <p>WEATHER<br />MATCH</p>
-          </div>
-          <div>
-            <span aria-hidden="true">◇</span>
-            <p>LOOKBOOK<br />CURATION</p>
-          </div>
-          <div>
-            <span aria-hidden="true">♡</span>
-            <p>COMFORT<br />DAILY</p>
-          </div>
-        </nav>
-
-        <footer>
-          <p>24시간 7일, 편안함을 입는다.</p>
-          <small id="statusMessage">기상청 API 설정을 기다리는 중입니다.</small>
+        <footer class="display-footer">
+          <p>247 DAILY STATION &mdash; WEATHER-RESPONSIVE LOOKBOOK</p>
+          <div class="condition-switcher" id="conditionSwitcher" aria-label="Preview weather conditions"></div>
         </footer>
+        <p class="visually-hidden" id="statusMessage" aria-live="polite">Loading weather.</p>
       </section>
     </main>
+
     <script src="./src/runtime-config.js"></script>
     <script type="module" src="./src/app.js"></script>
   </body>
