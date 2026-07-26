@@ -1,5 +1,4 @@
-import { WEATHER_CONFIG } from "./config.js";
-import { fetchCurrentWeather } from "./weather.js";
+import { fetchPublishedWeather } from "./weather.js";
 
 const CONDITIONS = [
   { id: "very-hot", icon: "clear", temp: 35, label: "Very Hot", look: "Air Shorts + Mesh Tee" },
@@ -123,9 +122,9 @@ async function loadWeather() {
   }
 
   try {
-    const weather = await fetchCurrentWeather(WEATHER_CONFIG);
+    const weather = await fetchPublishedWeather();
     renderCondition(selectCondition(weather), weather.temperature);
-    setStatus("Updated from the Korea Meteorological Administration ultra-short-term observation.");
+    setStatus("Updated from the private GitHub Actions weather snapshot.");
   } catch (error) {
     console.warn(error);
     renderCondition(selectCondition(FALLBACK_WEATHER), FALLBACK_WEATHER.temperature);

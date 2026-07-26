@@ -3,6 +3,8 @@ name: Deploy static site to GitHub Pages
 on:
   push:
     branches: ["main", "work"]
+  schedule:
+    - cron: "50 * * * *"
   workflow_dispatch:
     inputs:
       deploy_environment:
@@ -36,6 +38,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Guard GitHub Environment test mode
         if: ${{ github.event_name == 'workflow_dispatch' && (inputs.test_temperature != '' || inputs.test_precipitation != '') }}
         run: |
@@ -43,6 +46,7 @@ jobs:
             echo "GitHub Environment 변수 ENABLE_WEATHER_TEST_MODE=true 가 설정된 Environment에서만 테스트 날씨값을 사용할 수 있습니다."
             exit 1
           fi
+
       - name: Generate weather test override
         if: ${{ github.event_name == 'workflow_dispatch' && vars.ENABLE_WEATHER_TEST_MODE == 'true' }}
         env:
@@ -85,12 +89,26 @@ jobs:
             baseTime: "1200",
           };
           EOF_CONFIG
+
+      - name: Fetch KMA weather with repository secret
+        if: ${{ github.event_name != 'workflow_dispatch' || vars.ENABLE_WEATHER_TEST_MODE != 'true' }}
+        env:
+          WEATHER_SECRET_KEY: ${{ secrets.WEATHER_SECRET_KEY }}
+        run: |
+          if [ -z "$WEATHER_SECRET_KEY" ]; then
+            echo "::warning::WEATHER_SECRET_KEY is not configured. Deploying the committed fallback weather.json."
+          else
+            node scripts/fetch-weather.mjs
+          fi
+
       - name: Setup Pages
         uses: actions/configure-pages@v6
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
         with:
           path: "."
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5

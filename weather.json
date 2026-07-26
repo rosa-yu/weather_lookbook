@@ -1,0 +1,10 @@
+{
+  "temperature": 22,
+  "humidity": 55,
+  "precipitationType": "none",
+  "baseDate": null,
+  "baseTime": "--",
+  "locationName": "Seongsu-dong, Seoul",
+  "source": "fallback",
+  "generatedAt": null
+}
