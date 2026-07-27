@@ -2,6 +2,8 @@
   "temperature": 22,
   "humidity": 55,
   "precipitationType": "none",
+  "precipitationAmount": 0,
+  "precipitationCode": 0,
   "baseDate": null,
   "baseTime": "--",
   "locationName": "Seongsu-dong, Seoul",

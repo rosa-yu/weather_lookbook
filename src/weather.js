@@ -11,8 +11,13 @@ export async function fetchPublishedWeather() {
   const data = await response.json();
   const temperature = Number(data.temperature);
   const humidity = Number(data.humidity);
-  if (!Number.isFinite(temperature) || !Number.isFinite(humidity)) {
-    throw new Error("Published weather contains invalid temperature or humidity.");
+  const precipitationAmount = Number(data.precipitationAmount ?? 0);
+  if (
+    !Number.isFinite(temperature) ||
+    !Number.isFinite(humidity) ||
+    !Number.isFinite(precipitationAmount)
+  ) {
+    throw new Error("Published weather contains invalid numeric values.");
   }
   if (!PRECIPITATION_TYPES.has(data.precipitationType)) {
     throw new Error("Published weather contains an invalid precipitation type.");
@@ -22,5 +27,6 @@ export async function fetchPublishedWeather() {
     ...data,
     temperature,
     humidity,
+    precipitationAmount,
   };
 }

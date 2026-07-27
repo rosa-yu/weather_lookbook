@@ -17,8 +17,11 @@ const FALLBACK_WEATHER = {
   temperature: 22,
   humidity: 55,
   precipitationType: "none",
+  precipitationAmount: 0,
   baseTime: "--",
 };
+
+const HEAVY_RAIN_THRESHOLD_MM_PER_HOUR = 15;
 
 const elements = {
   date: document.querySelector("#dateText"),
@@ -55,6 +58,7 @@ function getTestWeather() {
     temperature: Number(override.temperature),
     humidity: Number(override.humidity ?? FALLBACK_WEATHER.humidity),
     precipitationType: override.precipitationType ?? "none",
+    precipitationAmount: Number(override.precipitationAmount ?? 0),
     baseTime: override.baseTime ?? "1200",
   };
 }
@@ -62,7 +66,9 @@ function getTestWeather() {
 function selectCondition(weather) {
   if (weather.precipitationType === "snow") return CONDITIONS[9];
   if (weather.precipitationType === "rain") {
-    return Number(weather.humidity) >= 85 ? CONDITIONS[8] : CONDITIONS[7];
+    return Number(weather.precipitationAmount) >= HEAVY_RAIN_THRESHOLD_MM_PER_HOUR
+      ? CONDITIONS[8]
+      : CONDITIONS[7];
   }
 
   const temperature = Number(weather.temperature);

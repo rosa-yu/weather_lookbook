@@ -90,15 +90,24 @@ jobs:
           };
           EOF_CONFIG
 
-      - name: Fetch KMA weather with repository secret
+      - name: Fetch KMA weather with repository secrets
         if: ${{ github.event_name != 'workflow_dispatch' || vars.ENABLE_WEATHER_TEST_MODE != 'true' }}
         env:
+          KMA_APIHUB_KEY: ${{ secrets.KMA_APIHUB_KEY }}
           WEATHER_SECRET_KEY: ${{ secrets.WEATHER_SECRET_KEY }}
         run: |
-          if [ -z "$WEATHER_SECRET_KEY" ]; then
-            echo "::warning::WEATHER_SECRET_KEY is not configured. Deploying the committed fallback weather.json."
-          else
+          if [ -n "$KMA_APIHUB_KEY" ]; then
+            node scripts/fetch-weather-apihub.mjs || {
+              if [ -z "$WEATHER_SECRET_KEY" ]; then
+                exit 1
+              fi
+              echo "::warning::APIHub collection failed. Falling back to the hourly public-data API."
+              node scripts/fetch-weather.mjs
+            }
+          elif [ -n "$WEATHER_SECRET_KEY" ]; then
             node scripts/fetch-weather.mjs
+          else
+            echo "::warning::No KMA secret is configured. Deploying the committed fallback weather.json."
           fi
 
       - name: Setup Pages
