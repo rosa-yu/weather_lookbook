@@ -8,15 +8,15 @@ on:
   workflow_dispatch:
     inputs:
       deploy_environment:
-        description: "테스트에 사용할 GitHub Environment"
+        description: "GitHub Environment used for test deployment"
         required: false
         type: environment
       test_temperature:
-        description: "테스트 기온(°C). 비워두면 Environment 변수 TEST_TEMPERATURE 사용"
+        description: "Test temperature (C); otherwise use TEST_TEMPERATURE"
         required: false
         type: string
       test_precipitation:
-        description: "테스트 강수 타입: none, rain, snow. 비워두면 Environment 변수 TEST_PRECIPITATION_TYPE 사용"
+        description: "Test precipitation: none, rain, or snow"
         required: false
         type: string
 
@@ -43,7 +43,7 @@ jobs:
         if: ${{ github.event_name == 'workflow_dispatch' && (inputs.test_temperature != '' || inputs.test_precipitation != '') }}
         run: |
           if [ "${{ vars.ENABLE_WEATHER_TEST_MODE }}" != "true" ]; then
-            echo "GitHub Environment 변수 ENABLE_WEATHER_TEST_MODE=true 가 설정된 Environment에서만 테스트 날씨값을 사용할 수 있습니다."
+            echo "Set ENABLE_WEATHER_TEST_MODE=true in the selected GitHub Environment to use test values."
             exit 1
           fi
 
@@ -61,22 +61,22 @@ jobs:
           HUMIDITY="${ENV_HUMIDITY:-55}"
 
           if [ -z "$TEMPERATURE" ] || [ -z "$PRECIPITATION" ]; then
-            echo "TEST_TEMPERATURE와 TEST_PRECIPITATION_TYPE Environment 변수를 설정하거나 workflow_dispatch 입력값을 넣어주세요."
+            echo "Set TEST_TEMPERATURE and TEST_PRECIPITATION_TYPE, or enter workflow_dispatch values."
             exit 1
           fi
 
           case "$PRECIPITATION" in
             none|rain|snow) ;;
-            *) echo "TEST_PRECIPITATION_TYPE은 none, rain, snow 중 하나여야 합니다."; exit 1 ;;
+            *) echo "TEST_PRECIPITATION_TYPE must be none, rain, or snow."; exit 1 ;;
           esac
 
           TEMPERATURE="$TEMPERATURE" node -e "const n=Number(process.env.TEMPERATURE); if (!Number.isFinite(n)) process.exit(1)" || {
-            echo "TEST_TEMPERATURE는 숫자여야 합니다."
+            echo "TEST_TEMPERATURE must be numeric."
             exit 1
           }
 
           HUMIDITY="$HUMIDITY" node -e "const n=Number(process.env.HUMIDITY); if (!Number.isFinite(n)) process.exit(1)" || {
-            echo "TEST_HUMIDITY는 숫자여야 합니다."
+            echo "TEST_HUMIDITY must be numeric."
             exit 1
           }
 
@@ -109,6 +109,12 @@ jobs:
           else
             echo "::warning::No KMA secret is configured. Deploying the committed fallback weather.json."
           fi
+
+      - name: Build lookbook video manifest
+        run: node scripts/build-lookbook-manifest.mjs
+
+      - name: Test lookbook schedule and shuffle cycle
+        run: node --test tests/lookbook-engine.test.mjs
 
       - name: Setup Pages
         uses: actions/configure-pages@v6

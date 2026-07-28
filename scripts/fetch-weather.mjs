@@ -113,6 +113,11 @@ async function fetchCurrentWeather(serviceKey) {
   const byCategory = Object.fromEntries(items.map((item) => [item.category, item.obsrValue]));
   const temperature = Number(byCategory.T1H);
   const humidity = Number(byCategory.REH);
+  const precipitationCode = Number(byCategory.PTY ?? 0);
+  const rawPrecipitationAmount = Number(byCategory.RN1 ?? 0);
+  const precipitationAmount = Number.isFinite(rawPrecipitationAmount)
+    ? Math.max(0, rawPrecipitationAmount)
+    : 0;
   if (!Number.isFinite(temperature) || !Number.isFinite(humidity)) {
     throw new Error("KMA response did not include valid temperature and humidity values.");
   }
@@ -121,6 +126,8 @@ async function fetchCurrentWeather(serviceKey) {
     temperature,
     humidity,
     precipitationType: normalizePrecipitation(byCategory.PTY),
+    precipitationAmount,
+    precipitationCode: Number.isFinite(precipitationCode) ? precipitationCode : 0,
     baseDate,
     baseTime,
     nx,

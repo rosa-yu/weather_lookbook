@@ -1,4 +1,9 @@
 import { fetchPublishedWeather } from "./weather.js";
+import {
+  fetchLookbookManifest,
+  selectScheduledLookbook,
+  takeNextVideo,
+} from "./lookbook-engine.js";
 
 const CONDITIONS = [
   { id: "very-hot", icon: "clear", temp: 35, label: "Very Hot", look: "Air Shorts + Mesh Tee" },
@@ -18,10 +23,11 @@ const FALLBACK_WEATHER = {
   humidity: 55,
   precipitationType: "none",
   precipitationAmount: 0,
+  precipitationCode: 0,
   baseTime: "--",
 };
-
-const HEAVY_RAIN_THRESHOLD_MM_PER_HOUR = 15;
+const FALLBACK_VIDEO = "./assets/display/lookbook.mp4";
+const HEAVY_RAIN_THRESHOLD_MM_PER_HOUR = 10;
 
 const elements = {
   date: document.querySelector("#dateText"),
@@ -34,6 +40,12 @@ const elements = {
   status: document.querySelector("#statusMessage"),
   video: document.querySelector("#lookbookVideo"),
 };
+
+let lookbookManifest = null;
+let activePool = null;
+let activeVideoPath = null;
+let failedVideos = new Set();
+let playbackUnlockInstalled = false;
 
 function updateClock() {
   const now = new Date();
@@ -59,11 +71,12 @@ function getTestWeather() {
     humidity: Number(override.humidity ?? FALLBACK_WEATHER.humidity),
     precipitationType: override.precipitationType ?? "none",
     precipitationAmount: Number(override.precipitationAmount ?? 0),
+    precipitationCode: Number(override.precipitationCode ?? Number.NaN),
     baseTime: override.baseTime ?? "1200",
   };
 }
 
-function selectCondition(weather) {
+function selectFallbackCondition(weather) {
   if (weather.precipitationType === "snow") return CONDITIONS[9];
   if (weather.precipitationType === "rain") {
     return Number(weather.precipitationAmount) >= HEAVY_RAIN_THRESHOLD_MM_PER_HOUR
@@ -79,6 +92,17 @@ function selectCondition(weather) {
   if (temperature >= 5) return CONDITIONS[4];
   if (temperature >= -3) return CONDITIONS[5];
   return CONDITIONS[6];
+}
+
+function scheduledPresentation(selection, weather) {
+  if (!selection) return selectFallbackCondition(weather);
+  return {
+    id: `scheduled:${selection.poolKey}`,
+    icon: selection.condition.icon,
+    temp: Number(weather.temperature),
+    label: selection.condition.labelEn,
+    look: selection.condition.labelKo,
+  };
 }
 
 function renderCondition(condition, temperature = condition.temp) {
@@ -119,22 +143,95 @@ function setStatus(message) {
   elements.status.dataset.ready = "true";
 }
 
+function requestPlayback() {
+  elements.video.play().catch(() => {
+    if (playbackUnlockInstalled) return;
+    playbackUnlockInstalled = true;
+    document.addEventListener(
+      "pointerdown",
+      () => {
+        playbackUnlockInstalled = false;
+        elements.video.play().catch(() => {});
+      },
+      { once: true },
+    );
+  });
+}
+
+function playNextInCycle() {
+  if (!activePool) return;
+  const availableVideos = activePool.videos.filter((video) => !failedVideos.has(video));
+  if (availableVideos.length === 0) {
+    if (activeVideoPath !== FALLBACK_VIDEO) {
+      activeVideoPath = FALLBACK_VIDEO;
+      elements.video.src = FALLBACK_VIDEO;
+      elements.video.load();
+      requestPlayback();
+    }
+    return;
+  }
+
+  const nextVideo = takeNextVideo(activePool.poolKey, availableVideos);
+  if (!nextVideo) return;
+  activeVideoPath = nextVideo;
+  elements.video.src = nextVideo;
+  elements.video.load();
+  requestPlayback();
+}
+
+function activateLookbookPool(selection) {
+  const registeredVideos = selection?.condition?.videos ?? [];
+  const usesRegisteredVideos = registeredVideos.length > 0;
+  const videos = usesRegisteredVideos
+    ? registeredVideos
+    : [lookbookManifest?.fallbackVideo ?? FALLBACK_VIDEO];
+  const poolKey = usesRegisteredVideos
+    ? selection.poolKey
+    : `fallback:${selection?.poolKey ?? "out-of-schedule"}`;
+  const signature = videos.join("\u0000");
+
+  if (activePool?.poolKey === poolKey && activePool.signature === signature) return;
+  activePool = { poolKey, signature, videos };
+  failedVideos = new Set();
+  playNextInCycle();
+}
+
+async function refreshLookbookManifest() {
+  try {
+    lookbookManifest = await fetchLookbookManifest();
+  } catch (error) {
+    console.warn(error);
+  }
+}
+
+function applyWeather(weather, sourceMessage) {
+  const selection = selectScheduledLookbook(lookbookManifest, weather, new Date());
+  renderCondition(scheduledPresentation(selection, weather), weather.temperature);
+  activateLookbookPool(selection);
+
+  if (selection && selection.condition.videos.length === 0) {
+    setStatus(`${sourceMessage} ${selection.poolKey} has no registered video; displaying fallback.`);
+  } else if (selection) {
+    setStatus(`${sourceMessage} Playing shuffle cycle ${selection.poolKey}.`);
+  } else {
+    setStatus(`${sourceMessage} No seasonal rule for today; displaying fallback lookbook.`);
+  }
+}
+
 async function loadWeather() {
+  await refreshLookbookManifest();
   const testWeather = getTestWeather();
   if (testWeather) {
-    renderCondition(selectCondition(testWeather), testWeather.temperature);
-    setStatus("Displaying the GitHub Environment test weather.");
+    applyWeather(testWeather, "Displaying the GitHub Environment test weather.");
     return;
   }
 
   try {
     const weather = await fetchPublishedWeather();
-    renderCondition(selectCondition(weather), weather.temperature);
-    setStatus("Updated from the private GitHub Actions weather snapshot.");
+    applyWeather(weather, "Updated from the private GitHub Actions weather snapshot.");
   } catch (error) {
     console.warn(error);
-    renderCondition(selectCondition(FALLBACK_WEATHER), FALLBACK_WEATHER.temperature);
-    setStatus(`Displaying fallback weather. ${error.message}`);
+    applyWeather(FALLBACK_WEATHER, `Displaying fallback weather. ${error.message}`);
   }
 }
 
@@ -179,8 +276,9 @@ setInterval(updateClock, 1000);
 loadWeather();
 setInterval(loadWeather, 10 * 60 * 1000);
 
-elements.video.play().catch(() => {
-  document.addEventListener("pointerdown", () => {
-    elements.video.play().catch(() => {});
-  }, { once: true });
+elements.video.addEventListener("ended", playNextInCycle);
+elements.video.addEventListener("error", () => {
+  if (!activeVideoPath || activeVideoPath === FALLBACK_VIDEO) return;
+  failedVideos.add(activeVideoPath);
+  playNextInCycle();
 });
