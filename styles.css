@@ -65,8 +65,8 @@ button, video { font: inherit; }
 .condition { font-size: 2.34375cqw; font-weight: 500; letter-spacing: 0.046875cqw; }
 .weather-rule { margin: 0.625cqw 0 2.1875cqw; }
 .lookbook-section { min-height: 0; flex: 1; display: flex; flex-direction: column; }
-.lookbook-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 2cqw; margin-bottom: 1.875cqw; }
-.lookbook-heading > p:last-child { max-width: 62%; font-size: 2.1875cqw; font-weight: 500; letter-spacing: 0.03125cqw; text-align: right; }
+.lookbook-heading { display: flex; min-height: 4.6875cqw; align-items: flex-start; justify-content: space-between; gap: 2cqw; margin-bottom: 1.875cqw; }
+.lookbook-heading > p:last-child { display: -webkit-box; width: 68%; height: 4.6875cqw; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 2; font-size: 1.875cqw; font-weight: 500; line-height: 1.25; letter-spacing: 0.03125cqw; overflow-wrap: anywhere; text-align: right; }
 .lookbook-media { position: relative; min-height: 0; flex: 1; overflow: hidden; }
 .video-clip { position: absolute; inset: 0; overflow: hidden; }
 .video-clip video { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center; }

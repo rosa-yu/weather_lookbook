@@ -181,6 +181,7 @@ function renderSwitcher() {
     button.setAttribute("aria-pressed", "false");
     button.addEventListener("click", () => {
       renderCondition(condition);
+      renderVideoTitle(activeVideoPath);
       setStatus(`Previewing ${condition.label}.`);
     });
     fragment.append(button);
@@ -192,6 +193,26 @@ function renderSwitcher() {
 function setStatus(message) {
   elements.status.textContent = message;
   elements.status.dataset.ready = "true";
+}
+
+function videoDisplayName(videoPath) {
+  const cleanPath = String(videoPath ?? "").split(/[?#]/)[0];
+  const encodedFileName = cleanPath.split("/").pop() ?? "";
+  let fileName = encodedFileName;
+  try {
+    fileName = decodeURIComponent(encodedFileName);
+  } catch {
+    // Keep the original path segment if it contains malformed URL encoding.
+  }
+  return fileName.replace(/\.(mp4|webm)$/i, "") || "LOOKBOOK";
+}
+
+function renderVideoTitle(videoPath) {
+  if (!videoPath) return;
+  const title = videoDisplayName(videoPath);
+  elements.look.textContent = title;
+  elements.look.title = title;
+  elements.video.setAttribute("aria-label", `${title} lookbook video`);
 }
 
 function requestPlayback() {
@@ -215,6 +236,7 @@ function playNextInCycle() {
   if (availableVideos.length === 0) {
     if (activeVideoPath !== FALLBACK_VIDEO) {
       activeVideoPath = FALLBACK_VIDEO;
+      renderVideoTitle(FALLBACK_VIDEO);
       elements.video.src = FALLBACK_VIDEO;
       elements.video.load();
       requestPlayback();
@@ -225,6 +247,7 @@ function playNextInCycle() {
   const nextVideo = takeNextVideo(activePool.poolKey, availableVideos);
   if (!nextVideo) return;
   activeVideoPath = nextVideo;
+  renderVideoTitle(nextVideo);
   elements.video.src = nextVideo;
   elements.video.load();
   requestPlayback();
@@ -241,7 +264,10 @@ function activateLookbookPool(selection) {
     : `fallback:${selection?.poolKey ?? "out-of-schedule"}`;
   const signature = videos.join("\u0000");
 
-  if (activePool?.poolKey === poolKey && activePool.signature === signature) return;
+  if (activePool?.poolKey === poolKey && activePool.signature === signature) {
+    renderVideoTitle(activeVideoPath);
+    return;
+  }
   activePool = { poolKey, signature, videos };
   failedVideos = new Set();
   playNextInCycle();
