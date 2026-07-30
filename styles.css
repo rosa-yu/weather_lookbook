@@ -70,20 +70,6 @@ button, video { font: inherit; }
 .lookbook-media { position: relative; min-height: 0; flex: 1; overflow: hidden; }
 .video-clip { position: absolute; inset: 0; overflow: hidden; }
 .video-clip video { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center; }
-.weather-effect { position: absolute; z-index: 2; inset: 0; overflow: hidden; pointer-events: none; }
-.weather-effect::after { position: absolute; inset: 0; content: ""; transition: background 300ms ease; }
-.weather-effect[data-effect="heavy-rain"]::after { background: linear-gradient(180deg, rgba(12, 28, 38, .1), rgba(20, 38, 48, .04)); }
-.weather-effect[data-effect="sleet"]::after { background: rgba(200, 220, 230, .045); }
-.weather-effect[data-effect="snow"]::after { background: linear-gradient(180deg, rgba(235, 243, 247, .055), transparent 55%); }
-.weather-particle { position: absolute; z-index: 1; top: -18%; left: var(--x); display: block; pointer-events: none; will-change: transform, opacity; }
-.effect-rain-drop { width: 1.25px; height: var(--length); border-radius: 999px; background: linear-gradient(180deg, rgba(230, 244, 252, 0), rgba(188, 216, 232, .94)); filter: drop-shadow(0 0 1px rgba(30, 55, 70, .5)); animation: lookbook-rain-fall var(--duration) linear var(--delay) infinite; }
-.weather-effect[data-effect="heavy-rain"] .effect-rain-drop { width: 1.75px; filter: drop-shadow(0 0 1px rgba(20, 42, 55, .65)); }
-.effect-snowflake, .effect-ice-pellet { width: var(--size); height: var(--size); border-radius: 50%; background: rgba(255, 255, 255, .96); box-shadow: 0 0 3px rgba(18, 34, 44, .45); }
-.effect-snowflake { animation: lookbook-snow-fall var(--duration) ease-in var(--delay) infinite; }
-.effect-ice-pellet { animation: lookbook-sleet-fall var(--duration) linear var(--delay) infinite; }
-@keyframes lookbook-rain-fall { 0% { opacity: 0; transform: translate3d(0, -8vh, 0) rotate(8deg); } 8% { opacity: var(--opacity); } 88% { opacity: var(--opacity); } 100% { opacity: 0; transform: translate3d(var(--drift), 112vh, 0) rotate(8deg); } }
-@keyframes lookbook-snow-fall { 0% { opacity: 0; transform: translate3d(0, -8vh, 0) rotate(0deg); } 10% { opacity: var(--opacity); } 90% { opacity: var(--opacity); } 100% { opacity: 0; transform: translate3d(var(--drift), 108vh, 0) rotate(360deg); } }
-@keyframes lookbook-sleet-fall { 0% { opacity: 0; transform: translate3d(0, -8vh, 0); } 12% { opacity: var(--opacity); } 88% { opacity: var(--opacity); } 100% { opacity: 0; transform: translate3d(var(--drift), 110vh, 0); } }
 .display-footer { display: flex; align-items: center; justify-content: space-between; gap: 2cqw; margin-top: 2.1875cqw; }
 .display-footer > p { color: #a3a29e; font-size: 1.5625cqw; font-weight: 500; letter-spacing: 0.234375cqw; line-height: 1.6; white-space: nowrap; }
 .condition-switcher { display: flex; align-items: center; gap: 1.40625cqw; }
@@ -98,4 +84,4 @@ button, video { font: inherit; }
 .ray { transform-box: fill-box; transform-origin: center; animation: weather-ray 2.4s ease-in-out infinite; }
 .rain-drop { animation: weather-rain 1.35s linear infinite; }
 .snow-flake { animation: weather-snow 2s ease-in-out infinite; }
-@media (prefers-reduced-motion: reduce) { .ray, .rain-drop, .snow-flake { animation: none; } .weather-particle { display: none; } }
+@media (prefers-reduced-motion: reduce) { .ray, .rain-drop, .snow-flake { animation: none; } }
