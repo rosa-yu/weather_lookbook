@@ -54,6 +54,16 @@ const LOOKBOOK_TEST_PRESETS = {
     date: "2026-08-14",
     weather: { temperature: 26, precipitationType: "rain", precipitationAmount: 10, precipitationCode: 1 },
   },
+  sleet: {
+    label: "Sleet",
+    date: "2026-11-02",
+    weather: { temperature: 8, precipitationType: "rain", precipitationAmount: 2, precipitationCode: 2 },
+  },
+  snow: {
+    label: "Snow",
+    date: "2026-11-02",
+    weather: { temperature: 1, precipitationType: "snow", precipitationAmount: 1, precipitationCode: 3 },
+  },
 };
 
 const elements = {
@@ -66,6 +76,7 @@ const elements = {
   switcher: document.querySelector("#conditionSwitcher"),
   status: document.querySelector("#statusMessage"),
   video: document.querySelector("#lookbookVideo"),
+  effect: document.querySelector("#weatherEffect"),
 };
 
 let lookbookManifest = null;
@@ -156,6 +167,75 @@ function scheduledPresentation(selection, weather) {
   };
 }
 
+function weatherEffectType(conditionId = "") {
+  if (conditionId.includes("heavy-rain")) return "heavy-rain";
+  if (conditionId.includes("light-rain")) return "light-rain";
+  if (conditionId.includes("sleet")) return "sleet";
+  if (conditionId.includes("snow")) return "snow";
+  return "none";
+}
+
+function particleFraction(index, salt) {
+  return ((index * salt + salt * 3) % 97) / 97;
+}
+
+function appendEffectParticles(className, count, options = {}) {
+  for (let index = 0; index < count; index += 1) {
+    const particle = document.createElement("span");
+    particle.className = `weather-particle ${className}`;
+    const duration = options.minDuration +
+      particleFraction(index, 29) * (options.maxDuration - options.minDuration);
+    particle.style.setProperty("--x", `${particleFraction(index, 53) * 100}%`);
+    particle.style.setProperty("--delay", `${-particleFraction(index, 71) * duration}s`);
+    particle.style.setProperty("--duration", `${duration}s`);
+    particle.style.setProperty("--opacity", String(
+      options.minOpacity + particleFraction(index, 41) * (options.maxOpacity - options.minOpacity),
+    ));
+    particle.style.setProperty("--drift", `${options.minDrift +
+      particleFraction(index, 67) * (options.maxDrift - options.minDrift)}px`);
+    if (options.minSize !== undefined) {
+      particle.style.setProperty("--size", `${options.minSize +
+        particleFraction(index, 37) * (options.maxSize - options.minSize)}px`);
+    }
+    if (options.minLength !== undefined) {
+      particle.style.setProperty("--length", `${options.minLength +
+        particleFraction(index, 43) * (options.maxLength - options.minLength)}px`);
+    }
+    elements.effect.append(particle);
+  }
+}
+
+function renderWeatherEffect(type) {
+  if (!elements.effect || elements.effect.dataset.effect === type) return;
+  elements.effect.replaceChildren();
+  elements.effect.dataset.effect = type;
+
+  if (type === "light-rain") {
+    appendEffectParticles("effect-rain-drop", 26, {
+      minDuration: 0.9, maxDuration: 1.35, minOpacity: 0.35, maxOpacity: 0.68,
+      minDrift: -18, maxDrift: -6, minLength: 14, maxLength: 28,
+    });
+  } else if (type === "heavy-rain") {
+    appendEffectParticles("effect-rain-drop", 72, {
+      minDuration: 0.42, maxDuration: 0.72, minOpacity: 0.5, maxOpacity: 0.9,
+      minDrift: -30, maxDrift: -12, minLength: 22, maxLength: 42,
+    });
+  } else if (type === "sleet") {
+    appendEffectParticles("effect-rain-drop", 24, {
+      minDuration: 0.58, maxDuration: 0.9, minOpacity: 0.42, maxOpacity: 0.78,
+      minDrift: -24, maxDrift: -8, minLength: 16, maxLength: 30,
+    });
+    appendEffectParticles("effect-ice-pellet", 22, {
+      minDuration: 1.1, maxDuration: 1.9, minOpacity: 0.55, maxOpacity: 0.92,
+      minDrift: -34, maxDrift: 18, minSize: 2, maxSize: 5,
+    });
+  } else if (type === "snow") {
+    appendEffectParticles("effect-snowflake", 48, {
+      minDuration: 4.5, maxDuration: 8.5, minOpacity: 0.55, maxOpacity: 0.95,
+      minDrift: -42, maxDrift: 42, minSize: 3, maxSize: 9,
+    });
+  }
+}
 function renderCondition(condition, temperature = condition.temp) {
   elements.temperature.textContent = Number.isFinite(Number(temperature))
     ? String(Math.round(Number(temperature)))
@@ -163,6 +243,7 @@ function renderCondition(condition, temperature = condition.temp) {
   elements.condition.textContent = condition.label;
   elements.look.textContent = condition.look;
   elements.icon.innerHTML = weatherIcon(condition.icon);
+  renderWeatherEffect(weatherEffectType(condition.id));
 
   elements.switcher.querySelectorAll("button").forEach((button) => {
     button.setAttribute("aria-pressed", String(button.dataset.condition === condition.id));

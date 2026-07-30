@@ -67,8 +67,11 @@
 - 비교적 선선한(27°C 미만): `?lookbookTest=relatively-cool`
 - 소나기/약한 비(10 mm/h 미만): `?lookbookTest=light-rain`
 - 강한 비(10 mm/h 이상): `?lookbookTest=heavy-rain`
+- 진눈깨비 효과: `?lookbookTest=sleet`
+- 눈 효과: `?lookbookTest=snow`
 
 예: `https://rosa-yu.github.io/weather_lookbook/?lookbookTest=very-hot`
+
 ## GitHub Environment로 날씨값 테스트
 
 1. `Settings > Environments`에서 테스트용 Environment를 만듭니다. 예: `weather-test`.
