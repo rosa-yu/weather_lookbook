@@ -58,6 +58,17 @@
 
 기본 위치는 성수동 좌표 `37.5446, 127.0557`, APIHub 격자 `61, 126`입니다.
 
+## 8월 14일~27일 조건 영상 테스트
+
+현재 날짜와 상관없이 실제 기간·기온·강수 매칭 로직을 통과시키는 URL 프리셋입니다.
+
+- 매우 더움(30°C 이상): `?lookbookTest=very-hot`
+- 더움(27°C 이상 30°C 미만): `?lookbookTest=hot`
+- 비교적 선선한(27°C 미만): `?lookbookTest=relatively-cool`
+- 소나기/약한 비(10 mm/h 미만): `?lookbookTest=light-rain`
+- 강한 비(10 mm/h 이상): `?lookbookTest=heavy-rain`
+
+예: `https://rosa-yu.github.io/weather_lookbook/?lookbookTest=very-hot`
 ## GitHub Environment로 날씨값 테스트
 
 1. `Settings > Environments`에서 테스트용 Environment를 만듭니다. 예: `weather-test`.

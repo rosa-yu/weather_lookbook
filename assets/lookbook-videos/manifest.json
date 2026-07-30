@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-07-28T08:44:15.482Z",
+  "generatedAt": "2026-07-30T04:56:29.169Z",
   "fallbackVideo": "./assets/display/lookbook.mp4",
   "periods": [
     {
@@ -20,7 +20,9 @@
             "kind": "temperature",
             "min": 30
           },
-          "videos": []
+          "videos": [
+            "./assets/lookbook-videos/08-14_08-27/01_%EB%A7%A4%EC%9A%B0-%EB%8D%94%EC%9B%80/TORAY%20DOT-AIR%203.5oz%20SHIRTS%20%2B%20LAB%20TECH%20STRUCTURED%20PANTS.mp4"
+          ]
         },
         {
           "id": "02-hot",
@@ -34,7 +36,9 @@
             "min": 27,
             "max": 30
           },
-          "videos": []
+          "videos": [
+            "./assets/lookbook-videos/08-14_08-27/02_%EB%8D%94%EC%9B%80/DYED%20WASHING%20RAW%20EDGE%20CROP%20T-SHIRTS%20%2B%20SLUB%20COTTON%20SHORTS.mp4"
+          ]
         },
         {
           "id": "03-relatively-cool",
@@ -47,7 +51,9 @@
             "kind": "temperature",
             "max": 27
           },
-          "videos": []
+          "videos": [
+            "./assets/lookbook-videos/08-14_08-27/03_%EB%B9%84%EA%B5%90%EC%A0%81-%EC%84%A0%EC%84%A0%ED%95%9C/0721(1).mp4"
+          ]
         },
         {
           "id": "04-light-rain",
@@ -60,7 +66,9 @@
             "kind": "precipitationAmount",
             "max": 10
           },
-          "videos": []
+          "videos": [
+            "./assets/lookbook-videos/08-14_08-27/04_%EC%86%8C%EB%82%98%EA%B8%B0-%EC%95%BD%ED%95%9C-%EB%B9%84/DYED%20WASHING%20RAW%20EDGE%20CROP%20T-SHIRTS%20%2B%20SLUB%20COTTON%20SHORTS.mp4"
+          ]
         },
         {
           "id": "05-heavy-rain",
@@ -73,7 +81,9 @@
             "kind": "precipitationAmount",
             "min": 10
           },
-          "videos": []
+          "videos": [
+            "./assets/lookbook-videos/08-14_08-27/05_%EA%B0%95%ED%95%9C-%EB%B9%84/TORAY%20DOT-AIR%203.0oz%20TEE%20%2B%20LAB%20TECH%20STRETCH%20PANTS.mp4"
+          ]
         }
       ]
     },

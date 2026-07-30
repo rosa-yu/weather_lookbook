@@ -28,6 +28,33 @@ const FALLBACK_WEATHER = {
 };
 const FALLBACK_VIDEO = "./assets/display/lookbook.mp4";
 const HEAVY_RAIN_THRESHOLD_MM_PER_HOUR = 10;
+const LOOKBOOK_TEST_PRESETS = {
+  "very-hot": {
+    label: "Very Hot",
+    date: "2026-08-14",
+    weather: { temperature: 30, precipitationType: "none", precipitationAmount: 0, precipitationCode: 0 },
+  },
+  hot: {
+    label: "Hot",
+    date: "2026-08-14",
+    weather: { temperature: 27, precipitationType: "none", precipitationAmount: 0, precipitationCode: 0 },
+  },
+  "relatively-cool": {
+    label: "Relatively Cool",
+    date: "2026-08-14",
+    weather: { temperature: 26, precipitationType: "none", precipitationAmount: 0, precipitationCode: 0 },
+  },
+  "light-rain": {
+    label: "Light Rain",
+    date: "2026-08-14",
+    weather: { temperature: 26, precipitationType: "rain", precipitationAmount: 1, precipitationCode: 1 },
+  },
+  "heavy-rain": {
+    label: "Heavy Rain",
+    date: "2026-08-14",
+    weather: { temperature: 26, precipitationType: "rain", precipitationAmount: 10, precipitationCode: 1 },
+  },
+};
 
 const elements = {
   date: document.querySelector("#dateText"),
@@ -76,6 +103,30 @@ function getTestWeather() {
   };
 }
 
+function localDateFromIso(dateText) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateText);
+  if (!match) return null;
+  const [, year, month, day] = match.map(Number);
+  const date = new Date(year, month - 1, day, 12);
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function getUrlTestContext() {
+  const presetId = new URLSearchParams(window.location.search).get("lookbookTest");
+  const preset = LOOKBOOK_TEST_PRESETS[presetId];
+  if (!preset) return null;
+
+  return {
+    date: localDateFromIso(preset.date),
+    weather: {
+      ...FALLBACK_WEATHER,
+      ...preset.weather,
+      baseDate: preset.date.replaceAll("-", ""),
+      baseTime: "1200",
+    },
+    message: `TEST ${preset.date} · ${preset.label}.`,
+  };
+}
 function selectFallbackCondition(weather) {
   if (weather.precipitationType === "snow") return CONDITIONS[9];
   if (weather.precipitationType === "rain") {
@@ -204,8 +255,8 @@ async function refreshLookbookManifest() {
   }
 }
 
-function applyWeather(weather, sourceMessage) {
-  const selection = selectScheduledLookbook(lookbookManifest, weather, new Date());
+function applyWeather(weather, sourceMessage, date = new Date()) {
+  const selection = selectScheduledLookbook(lookbookManifest, weather, date);
   renderCondition(scheduledPresentation(selection, weather), weather.temperature);
   activateLookbookPool(selection);
 
@@ -220,6 +271,12 @@ function applyWeather(weather, sourceMessage) {
 
 async function loadWeather() {
   await refreshLookbookManifest();
+  const urlTestContext = getUrlTestContext();
+  if (urlTestContext) {
+    applyWeather(urlTestContext.weather, urlTestContext.message, urlTestContext.date);
+    return;
+  }
+
   const testWeather = getTestWeather();
   if (testWeather) {
     applyWeather(testWeather, "Displaying the GitHub Environment test weather.");
