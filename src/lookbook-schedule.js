@@ -20,9 +20,9 @@ export const LOOKBOOK_SCHEDULE = [
     start: "08-28",
     end: "09-13",
     conditions: [
-      { id: "01-late-heat", folder: "01_늦더위", labelKo: "늦더위", labelEn: "Late Summer Heat", icon: "clear", expectedCount: 5, match: { kind: "temperature", min: 29 } },
-      { id: "02-cool", folder: "02_선선함", labelKo: "선선함", labelEn: "Cool", icon: "clouds", expectedCount: 4, match: { kind: "temperature", min: 25, max: 29 } },
-      { id: "03-chilly", folder: "03_쌀쌀함", labelKo: "쌀쌀함", labelEn: "Chilly", icon: "cold", expectedCount: 2, match: { kind: "temperature", max: 25 } },
+      { id: "01-late-heat", folder: "01_늦더위", labelKo: "늦더위", labelEn: "Late Summer Heat", icon: "clear", expectedCount: 5, match: { kind: "temperature", min: 32 } },
+      { id: "02-cool", folder: "02_선선함", labelKo: "선선함", labelEn: "Cool", icon: "clouds", expectedCount: 4, match: { kind: "temperature", min: 30, max: 32 } },
+      { id: "03-chilly", folder: "03_쌀쌀함", labelKo: "쌀쌀함", labelEn: "Chilly", icon: "cold", expectedCount: 2, match: { kind: "temperature", max: 30 } },
       { id: "04-light-rain", folder: "04_소나기-약한-비", labelKo: "소나기/약한 비", labelEn: "Light Rain", icon: "rain", expectedCount: 2, match: { kind: "precipitationAmount", max: 10 } },
       { id: "05-heavy-rain", folder: "05_강한-비", labelKo: "강한 비", labelEn: "Heavy Rain", icon: "rain", expectedCount: 2, match: { kind: "precipitationAmount", min: 10 } },
     ],

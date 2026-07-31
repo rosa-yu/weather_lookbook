@@ -48,6 +48,33 @@ test("Aug 14 temperature boundaries are 32 and 34 degrees", () => {
   assert.equal(selectTemperature(31.9).condition.id, "03-relatively-cool");
 });
 
+test("Aug 28 temperature boundaries are 30 and 32 degrees with the existing rain split", () => {
+  const date = new Date(2026, 7, 28, 12);
+  const selectTemperature = (temperature) =>
+    selectScheduledLookbook(manifest, weather({ temperature }), date);
+
+  assert.equal(selectTemperature(32).condition.id, "01-late-heat");
+  assert.equal(selectTemperature(31.9).condition.id, "02-cool");
+  assert.equal(selectTemperature(30).condition.id, "02-cool");
+  assert.equal(selectTemperature(29.9).condition.id, "03-chilly");
+  assert.equal(
+    selectScheduledLookbook(
+      manifest,
+      weather({ precipitationType: "rain", precipitationCode: 1, precipitationAmount: 9.9 }),
+      date,
+    ).condition.id,
+    "04-light-rain",
+  );
+  assert.equal(
+    selectScheduledLookbook(
+      manifest,
+      weather({ precipitationType: "rain", precipitationCode: 1, precipitationAmount: 10 }),
+      date,
+    ).condition.id,
+    "05-heavy-rain",
+  );
+});
+
 test("10 mm/h is the exact heavy-rain boundary", () => {
   const date = new Date(2026, 7, 20, 12);
   const light = selectScheduledLookbook(

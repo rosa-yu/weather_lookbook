@@ -102,7 +102,7 @@
           "expectedCount": 5,
           "match": {
             "kind": "temperature",
-            "min": 29
+            "min": 32
           },
           "videos": []
         },
@@ -115,8 +115,8 @@
           "expectedCount": 4,
           "match": {
             "kind": "temperature",
-            "min": 25,
-            "max": 29
+            "min": 30,
+            "max": 32
           },
           "videos": []
         },
@@ -129,7 +129,7 @@
           "expectedCount": 2,
           "match": {
             "kind": "temperature",
-            "max": 25
+            "max": 30
           },
           "videos": []
         },
