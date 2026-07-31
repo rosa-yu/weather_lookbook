@@ -19,7 +19,7 @@
 3. 변경을 commit하고 `main`에 push합니다.
 4. GitHub Actions가 모든 조건 폴더를 스캔해 `manifest.json`을 자동 생성하고 Pages에 배포합니다.
 
-영상은 한 조건 폴더 안의 등록 파일을 무작위 순서로 한 번씩 모두 재생한 뒤 다시 섞습니다. 새 cycle의 첫 영상은 직전 cycle의 마지막 영상과 겹치지 않습니다. 재생 순서는 브라우저 `localStorage`에 조건별로 저장되므로 페이지가 새로고침되어도 cycle이 이어집니다. 선택된 폴더가 비어 있으면 `assets/display/lookbook.mp4`를 fallback으로 재생합니다.
+영상은 한 조건 폴더 안의 등록 파일을 무작위 순서로 한 번씩 모두 재생한 뒤 다시 섞습니다. 새 cycle의 첫 영상은 직전 cycle의 마지막 영상과 겹치지 않습니다. 재생 순서는 브라우저 `localStorage`에 조건별로 저장되므로 페이지가 새로고침되어도 cycle이 이어집니다. 선택된 폴더가 비어 있으면 `assets/display/KOMATSU Pants + Light Shirt.mp4`를 fallback으로 재생합니다.
 
 전체 폴더와 기대 영상 수는 `assets/lookbook-videos/README.md`에 정리되어 있습니다. 엑셀의 `2.19~ 프리 스프링` 행은 종료일·기온/강수 기준·영상 수가 비어 있어 아직 자동 조건에 포함하지 않았습니다. 2월 15일~8월 13일도 완성된 기간 규칙이 없으므로 fallback 영상을 사용합니다.
 
@@ -53,7 +53,7 @@
 - `scripts/fetch-weather-apihub.mjs`: APIHub 10분 실황 격자자료 수집기
 - `scripts/fetch-weather.mjs`: 공공데이터포털 fallback 수집기
 - `assets/lookbook-videos/`: 기간·조건별 착장 영상 폴더
-- `assets/display/lookbook.mp4`: 조건 영상이 없을 때 사용하는 fallback 영상
+- `assets/display/KOMATSU Pants + Light Shirt.mp4`: 조건 영상이 없을 때 사용하는 fallback 영상
 - `.github/workflows/pages.yml`: 날씨·영상 매니페스트 생성 및 Pages 배포
 
 기본 위치는 성수동 좌표 `37.5446, 127.0557`, APIHub 격자 `61, 126`입니다.

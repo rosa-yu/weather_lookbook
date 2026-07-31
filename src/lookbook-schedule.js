@@ -1,4 +1,4 @@
-export const FALLBACK_LOOKBOOK_VIDEO = "./assets/display/lookbook.mp4";
+export const FALLBACK_LOOKBOOK_VIDEO = "./assets/display/KOMATSU Pants + Light Shirt.mp4";
 
 export const LOOKBOOK_SCHEDULE = [
   {

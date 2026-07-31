@@ -26,7 +26,7 @@ const FALLBACK_WEATHER = {
   precipitationCode: 0,
   baseTime: "--",
 };
-const FALLBACK_VIDEO = "./assets/display/lookbook.mp4";
+const FALLBACK_VIDEO = "./assets/display/KOMATSU Pants + Light Shirt.mp4";
 const HEAVY_RAIN_THRESHOLD_MM_PER_HOUR = 10;
 const LOOKBOOK_TEST_PRESETS = {
   "very-hot": {
