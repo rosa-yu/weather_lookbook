@@ -37,14 +37,15 @@ test("cross-year date ranges include both sides of New Year", () => {
   assert.equal(isDateInPeriod(new Date(2027, 0, 4), "11-30", "01-03"), false);
 });
 
-test("Aug 14 example selects the under-27 folder", () => {
-  const selection = selectScheduledLookbook(
-    manifest,
-    weather({ temperature: 26.9 }),
-    new Date(2026, 7, 14, 12),
-  );
-  assert.equal(selection.period.id, "08-14_08-27");
-  assert.equal(selection.condition.id, "03-relatively-cool");
+test("Aug 14 temperature boundaries are 32 and 34 degrees", () => {
+  const date = new Date(2026, 7, 14, 12);
+  const selectTemperature = (temperature) =>
+    selectScheduledLookbook(manifest, weather({ temperature }), date);
+
+  assert.equal(selectTemperature(34).condition.id, "01-very-hot");
+  assert.equal(selectTemperature(33.9).condition.id, "02-hot");
+  assert.equal(selectTemperature(32).condition.id, "02-hot");
+  assert.equal(selectTemperature(31.9).condition.id, "03-relatively-cool");
 });
 
 test("10 mm/h is the exact heavy-rain boundary", () => {

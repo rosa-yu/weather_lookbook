@@ -18,7 +18,7 @@
           "expectedCount": 5,
           "match": {
             "kind": "temperature",
-            "min": 30
+            "min": 34
           },
           "videos": [
             "./assets/lookbook-videos/08-14_08-27/01_%EB%A7%A4%EC%9A%B0-%EB%8D%94%EC%9B%80/TORAY%20DOT-AIR%203.5oz%20SHIRTS%20%2B%20LAB%20TECH%20STRUCTURED%20PANTS.mp4"
@@ -33,8 +33,8 @@
           "expectedCount": 4,
           "match": {
             "kind": "temperature",
-            "min": 27,
-            "max": 30
+            "min": 32,
+            "max": 34
           },
           "videos": [
             "./assets/lookbook-videos/08-14_08-27/02_%EB%8D%94%EC%9B%80/DYED%20WASHING%20RAW%20EDGE%20CROP%20T-SHIRTS%20%2B%20SLUB%20COTTON%20SHORTS.mp4"
@@ -49,7 +49,7 @@
           "expectedCount": 2,
           "match": {
             "kind": "temperature",
-            "max": 27
+            "max": 32
           },
           "videos": [
             "./assets/lookbook-videos/08-14_08-27/03_%EB%B9%84%EA%B5%90%EC%A0%81-%EC%84%A0%EC%84%A0%ED%95%9C/0721(1).mp4"

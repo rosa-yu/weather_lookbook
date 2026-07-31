@@ -32,17 +32,17 @@ const LOOKBOOK_TEST_PRESETS = {
   "very-hot": {
     label: "Very Hot",
     date: "2026-08-14",
-    weather: { temperature: 30, precipitationType: "none", precipitationAmount: 0, precipitationCode: 0 },
+    weather: { temperature: 34, precipitationType: "none", precipitationAmount: 0, precipitationCode: 0 },
   },
   hot: {
     label: "Hot",
     date: "2026-08-14",
-    weather: { temperature: 27, precipitationType: "none", precipitationAmount: 0, precipitationCode: 0 },
+    weather: { temperature: 32, precipitationType: "none", precipitationAmount: 0, precipitationCode: 0 },
   },
   "relatively-cool": {
     label: "Relatively Cool",
     date: "2026-08-14",
-    weather: { temperature: 26, precipitationType: "none", precipitationAmount: 0, precipitationCode: 0 },
+    weather: { temperature: 31, precipitationType: "none", precipitationAmount: 0, precipitationCode: 0 },
   },
   "light-rain": {
     label: "Light Rain",
